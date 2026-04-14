@@ -356,17 +356,29 @@ function predict(data) {
   const sets = [];
 
   // ============================================
-  // A) 출현 빈도 TOP: 역대 가장 많이 나온 번호
+  // A) 최근 급상승: 최근 10회 출현율이 전체 평균 대비 높은 번호
   // ============================================
   {
+    const recentN = 10;
     const freq = Array(46).fill(0);
     for (const d of data) for (const n of d.numbers) freq[n]++;
-    const ranked = Array.from({ length: 45 }, (_, i) => ({ n: i + 1, f: freq[i + 1] }))
-      .sort((a, b) => b.f - a.f);
+    const recentFreq = Array(46).fill(0);
+    for (const d of data.slice(-recentN)) for (const n of d.numbers) recentFreq[n]++;
+
+    const ranked = [];
+    for (let i = 1; i <= 45; i++) {
+      const avgRate = freq[i] / totalRounds;
+      const recentRate = recentFreq[i] / recentN;
+      const surge = avgRate > 0 ? +(recentRate / avgRate).toFixed(2) : 0;
+      ranked.push({ n: i, recent: recentFreq[i], avg: freq[i], surge });
+    }
+    ranked.sort((a, b) => b.surge - a.surge || b.recent - a.recent);
+
+    const top6 = ranked.filter(r => r.recent > 0).slice(0, 6);
     sets.push(makeResult(
-      ranked.slice(0, 6).map(r => r.n),
-      '역대 빈도 TOP 6',
-      ranked.slice(0, 6).map(r => `${r.n}번(${r.f}회)`).join(', ')
+      top6.map(r => r.n),
+      `최근 급상승 (최근 ${recentN}회 vs 전체 평균)`,
+      top6.map(r => `${r.n}번(최근${r.recent}회, ${r.surge}배)`).join(', ')
     ));
   }
 
@@ -456,22 +468,24 @@ function predict(data) {
   }
 
   // ============================================
-  // E) 패턴 필터 조합: 합계+홀짝+구간+AC값 최적 범위 필터
+  // E) 패턴 필터 조합: 빈도+주기 기반, 기존 세트 중복 감점, 합계+홀짝+구간 필터
   // ============================================
   {
-    // 모든 번호에 종합 점수를 매기되, 패턴 필터로 유효한 조합 선택
     const freq = Array(46).fill(0);
     for (const d of data) for (const n of d.numbers) freq[n]++;
-    const recentFreq = Array(46).fill(0);
-    for (const d of data.slice(-30)) for (const n of d.numbers) recentFreq[n]++;
-
-    // 종합 점수
     const maxF = Math.max(...freq.slice(1));
-    const maxR = Math.max(...recentFreq.slice(1)) || 1;
+    const lastSeen = Array(46).fill(0);
+    for (const d of data) for (const n of d.numbers) lastSeen[n] = d.round;
+    const maxGap = Math.max(...Array.from({ length: 45 }, (_, i) => latestRound - lastSeen[i + 1])) || 1;
     const scores = Array(46).fill(0);
     for (let i = 1; i <= 45; i++) {
-      scores[i] = (freq[i] / maxF) * 50 + (recentFreq[i] / maxR) * 50;
+      scores[i] = (freq[i] / maxF) * 60 + ((latestRound - lastSeen[i]) / maxGap) * 40;
     }
+
+    // 이미 A~D에 포함된 번호 감점 (중복 방지)
+    const usedCount = Array(46).fill(0);
+    for (const s of sets) for (const n of s.numbers) usedCount[n]++;
+    for (let i = 1; i <= 45; i++) scores[i] *= Math.max(0.1, 1 - usedCount[i] * 0.35);
 
     const ranked = Array.from({ length: 45 }, (_, i) => ({ n: i + 1, s: scores[i + 1] }))
       .sort((a, b) => b.s - a.s);
