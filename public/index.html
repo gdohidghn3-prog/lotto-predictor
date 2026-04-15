@@ -29,17 +29,9 @@ body {
   min-height: 100vh;
 }
 
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 16px;
-}
+.container { max-width: 900px; margin: 0 auto; padding: 16px; }
 
-header {
-  text-align: center;
-  padding: 32px 0 20px;
-}
-
+header { text-align: center; padding: 32px 0 20px; }
 header h1 {
   font-size: 2rem;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -47,33 +39,15 @@ header h1 {
   -webkit-text-fill-color: transparent;
   margin-bottom: 4px;
 }
-
-#status {
-  color: var(--dim);
-  font-size: 0.82rem;
-  margin-top: 6px;
-}
+#status { color: var(--dim); font-size: 0.82rem; margin-top: 6px; }
 
 /* 탭 */
-.tabs {
-  display: flex;
-  gap: 0;
-  margin: 20px 0 20px;
-  border-bottom: 1px solid var(--border);
-}
-
+.tabs { display: flex; gap: 0; margin: 20px 0 20px; border-bottom: 1px solid var(--border); }
 .tab {
-  padding: 10px 24px;
-  border: none;
-  background: none;
-  color: var(--dim);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: color 0.2s;
+  padding: 10px 24px; border: none; background: none; color: var(--dim);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  font-size: 0.95rem; font-weight: 500; transition: color 0.2s;
 }
-
 .tab:hover { color: var(--text); }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 .tab-content { display: none; }
@@ -81,19 +55,11 @@ header h1 {
 
 /* 로또 볼 */
 .ball {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #fff;
-  margin: 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  font-weight: 700; font-size: 0.95rem; color: #fff; margin: 2px;
   text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
-
 .ball.sm { width: 34px; height: 34px; font-size: 0.82rem; }
 .ball.b1  { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
 .ball.b10 { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
@@ -103,122 +69,103 @@ header h1 {
 
 /* 예측 세트 */
 .set-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
 }
-
 .set-row:last-child { border-bottom: none; }
-
-.set-idx {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--accent);
-  min-width: 24px;
-  text-align: center;
-}
-
+.set-idx { font-size: 1.1rem; font-weight: 700; color: var(--accent); min-width: 24px; text-align: center; }
 .set-balls { flex: 1; }
-
-.set-meta {
-  display: flex;
-  gap: 8px;
-  font-size: 0.78rem;
-  color: var(--dim);
-}
-
-.set-meta span {
-  background: rgba(99,102,241,0.08);
-  padding: 3px 8px;
-  border-radius: 5px;
-}
-
+.set-meta { display: flex; gap: 8px; font-size: 0.78rem; color: var(--dim); }
+.set-meta span { background: rgba(99,102,241,0.08); padding: 3px 8px; border-radius: 5px; }
 .set-strat {
-  font-size: 0.78rem;
-  color: var(--dim);
-  margin-top: 4px;
+  font-size: 0.78rem; color: var(--accent); margin-top: 4px;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+  transition: opacity 0.2s;
+}
+.set-strat:hover { opacity: 0.7; }
+.set-strat::after { content: '?'; font-size: 0.65rem; background: var(--accent); color: #fff; width: 14px; height: 14px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+
+/* 모달 */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px; max-width: 520px; width: 90%;
+  max-height: 80vh; overflow-y: auto;
+  transform: translateY(20px); transition: transform 0.2s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-title {
+  font-size: 1.05rem; font-weight: 700; color: var(--accent);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+}
+.modal-title .set-letter {
+  background: var(--accent); color: #fff; width: 28px; height: 28px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+}
+.modal-balls { margin: 14px 0; }
+.modal-section { margin-top: 16px; }
+.modal-section h4 { font-size: 0.82rem; color: var(--dim); margin-bottom: 8px; font-weight: 500; }
+.modal-desc { font-size: 0.85rem; line-height: 1.7; color: var(--text); }
+.modal-detail {
+  font-size: 0.82rem; color: var(--dim); line-height: 1.8;
+  background: rgba(99,102,241,0.05); padding: 12px 14px;
+  border-radius: 8px; margin-top: 8px;
+}
+.modal-close {
+  position: absolute; top: 14px; right: 16px;
+  background: none; border: none; color: var(--dim); font-size: 1.4rem;
+  cursor: pointer; line-height: 1;
+}
+.modal-close:hover { color: var(--text); }
+.modal-stat {
+  display: inline-flex; gap: 8px; margin-top: 10px;
+  font-size: 0.8rem; color: var(--dim);
+}
+.modal-stat span {
+  background: rgba(99,102,241,0.08); padding: 4px 10px; border-radius: 5px;
 }
 
 /* 카드 */
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 18px;
-  margin-bottom: 14px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px; margin-bottom: 14px;
 }
-
-.card h3 {
-  font-size: 0.9rem;
-  color: var(--dim);
-  margin-bottom: 14px;
-  font-weight: 500;
-}
+.card h3 { font-size: 0.9rem; color: var(--dim); margin-bottom: 14px; font-weight: 500; }
 
 /* 바 차트 */
-.bar-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
-  font-size: 0.82rem;
-}
-
-.bar-label {
-  min-width: 50px;
-  text-align: right;
-  padding-right: 8px;
-  color: var(--dim);
-}
-
-.bar-track {
-  flex: 1;
-  height: 20px;
-  background: rgba(99,102,241,0.06);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.bar-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.5s ease;
-}
-
-.bar-value {
-  min-width: 80px;
-  padding-left: 8px;
-  color: var(--dim);
-  font-size: 0.8rem;
-}
+.bar-row { display: flex; align-items: center; margin-bottom: 5px; font-size: 0.82rem; }
+.bar-label { min-width: 50px; text-align: right; padding-right: 8px; color: var(--dim); }
+.bar-track { flex: 1; height: 20px; background: rgba(99,102,241,0.06); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+.bar-value { min-width: 80px; padding-left: 8px; color: var(--dim); font-size: 0.8rem; }
 
 /* 그리드 */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
 @media (max-width: 700px) {
   .grid-2 { grid-template-columns: 1fr; }
   .set-row { flex-wrap: wrap; }
   .set-meta { width: 100%; }
 }
 
-/* 히트맵 */
-.number-grid {
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  gap: 5px;
-  max-width: 380px;
+/* 히트맵 개선 */
+.heatmap { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; max-width: 420px; }
+.hm-cell {
+  aspect-ratio: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; border-radius: 6px;
+  font-weight: 600; font-size: 0.82rem; position: relative;
+  border: 1px solid transparent; transition: border-color 0.2s;
+  cursor: default;
 }
-
-.number-cell {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.82rem;
-}
+.hm-cell .hm-num { line-height: 1; }
+.hm-cell .hm-cnt { font-size: 0.55rem; font-weight: 400; opacity: 0.7; margin-top: 1px; }
+.hm-cell:hover { border-color: rgba(255,255,255,0.3); }
 
 /* 테이블 */
 table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -226,28 +173,18 @@ th { color: var(--dim); font-weight: 500; text-align: left; padding: 8px; border
 td { padding: 8px; border-bottom: 1px solid rgba(42,45,58,0.4); }
 
 .disclaimer {
-  text-align: center;
-  padding: 16px;
-  color: var(--dim);
-  font-size: 0.75rem;
-  border-top: 1px solid var(--border);
-  margin-top: 32px;
+  text-align: center; padding: 16px; color: var(--dim);
+  font-size: 0.75rem; border-top: 1px solid var(--border); margin-top: 32px;
 }
-
 .loading { text-align: center; padding: 50px 20px; color: var(--dim); }
 .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .btn {
-  padding: 10px 28px;
-  border: none;
-  border-radius: 8px;
+  padding: 10px 28px; border: none; border-radius: 8px;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  color: #fff; font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.2s;
 }
 .btn:hover { opacity: 0.9; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -270,14 +207,12 @@ td { padding: 8px; border-bottom: 1px solid rgba(42,45,58,0.4); }
     <div class="tab" data-tab="analysis">분석</div>
   </div>
 
-  <!-- 예측 결과 -->
   <div class="tab-content active" id="tab-predict">
     <div id="predictResult">
       <div class="loading">예측 버튼을 눌러주세요</div>
     </div>
   </div>
 
-  <!-- 분석 -->
   <div class="tab-content" id="tab-analysis">
     <div id="analysisContent">
       <div class="loading"><div class="spinner"></div></div>
@@ -289,10 +224,32 @@ td { padding: 8px; border-bottom: 1px solid rgba(42,45,58,0.4); }
   </div>
 </div>
 
+<!-- 모달 -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
 <script>
 function bc(n) { return n<=10?'b1':n<=20?'b10':n<=30?'b20':n<=40?'b30':'b40'; }
 function ball(n,sm) { return `<span class="ball ${sm?'sm':''} ${bc(n)}">${n}</span>`; }
 function balls(arr,sm) { return arr.map(n=>ball(n,sm)).join(''); }
+
+// 전략 설명 맵
+const STRAT_DESC = {
+  '최근 급상승': '최근 10회 출현율을 전체 평균 출현율로 나눈 "급상승 배율"이 높은 번호를 선택합니다. 최근 들어 자주 뽑히기 시작한 번호에 주목하는 전략입니다.',
+  '주기 도래': '각 번호의 평균 출현 주기(몇 회마다 나오는지)를 계산하고, 주기 대비 미출현 기간이 긴 번호를 선택합니다. 평균적으로 "나올 때가 된" 번호를 찾습니다.',
+  '후속 번호': '직전 회차 당첨번호 각각에 대해, 과거에 그 번호 다음 회차에 자주 나왔던 번호를 통계적으로 집계합니다. 번호 간 시간적 연관성을 분석합니다.',
+  '동반 출현 체인': '전체 역대 데이터에서 함께 당첨된 횟수가 가장 많은 번호 쌍(pair)을 찾고, 강한 쌍을 연결하여 6개를 구성합니다.',
+  '패턴 필터': '빈도(60%)와 미출현 간격(40%)으로 기본 점수를 매긴 후, 앞선 전략(A~D)에 이미 포함된 번호를 감점합니다. 합계 범위, 홀짝 비율, 구간 균형 필터를 적용합니다.',
+  '최근 급상승 단기': '전략 A와 유사하지만 윈도우를 최근 5회로 줄여 더 짧은 모멘텀을 포착합니다. 아주 최근에 급등한 번호를 찾습니다.',
+  '조건부 확률': '직전 회차의 합계와 홀짝 비율이 비슷했던 과거 회차를 찾고, 그 다음 회차에 나왔던 번호 빈도를 집계합니다. 유사 조건 전이 확률 기반입니다.',
+  '평균 회귀': '전체 기간 평균 출현율 대비 최근 15회 출현율이 크게 낮은 번호를 선택합니다. 장기 평균으로 회귀할 것이라는 통계적 가정에 기반합니다.',
+  '피처 복합': '전체 빈도, 최근 10회/5회 빈도, 3회 연속 미출현 여부, 직전 출현 여부 등 여러 피처를 가중 합산합니다. A~H 전략 중복 번호는 감점합니다.',
+  '패턴 필터 V2': '전략 E와 유사한 구조이나, 미출현 간격에 더 높은 가중치(60%)를 부여하고 A~I 전체 전략의 중복을 강하게 감점하여 완전히 다른 번호를 도출합니다.',
+};
 
 // 탭
 document.querySelectorAll('.tab').forEach(t => {
@@ -304,7 +261,43 @@ document.querySelectorAll('.tab').forEach(t => {
   });
 });
 
+// 모달
+const overlay = document.getElementById('modalOverlay');
+document.getElementById('modalClose').addEventListener('click', () => overlay.classList.remove('open'));
+overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+
+function openModal(set, idx) {
+  const letter = String.fromCharCode(65 + idx);
+  const stratName = set.strategy.split('(')[0].trim();
+  const stratDetail = set.strategy.includes('(') ? set.strategy.split('(').slice(1).join('(').replace(/\)$/, '') : '';
+  const desc = STRAT_DESC[stratName] || '통계 분석 기반 번호 선택 전략입니다.';
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-title">
+      <span class="set-letter">${letter}</span>
+      ${stratName}
+    </div>
+    <div class="modal-balls">${balls(set.numbers)}</div>
+    <div class="modal-stat">
+      <span>합계 ${set.sum}</span>
+      <span>홀:짝 ${set.oddEven}</span>
+    </div>
+    <div class="modal-section">
+      <h4>분석 방법</h4>
+      <div class="modal-desc">${desc}</div>
+    </div>
+    ${stratDetail ? `<div class="modal-section"><h4>적용 조건</h4><div class="modal-detail">${stratDetail}</div></div>` : ''}
+    <div class="modal-section">
+      <h4>선택 근거</h4>
+      <div class="modal-detail">${set.reason || '점수 기반 상위 6개 번호 선택'}</div>
+    </div>
+  `;
+  overlay.classList.add('open');
+}
+
 let analysisData = null;
+let predictData = null;
 
 async function loadData() {
   try {
@@ -329,20 +322,20 @@ async function runPredict() {
 
   try {
     const res = await fetch('/api/predict');
-    const data = await res.json();
+    predictData = await res.json();
 
     let html = `<div style="margin-bottom:16px">
       <h2 style="font-size:1.2rem;margin-bottom:2px">${analysisData.latestRound + 1}회차 추천 번호</h2>
-      <p style="color:var(--dim);font-size:0.8rem">${analysisData.totalRounds}회 분석 기반 | 10가지 독립 전략</p>
+      <p style="color:var(--dim);font-size:0.8rem">${analysisData.totalRounds}회 분석 기반 | 10가지 독립 전략 | 전략명을 누르면 상세 설명</p>
     </div>`;
 
     html += '<div class="card" style="padding:0;overflow:hidden">';
-    data.sets.forEach((s, i) => {
+    predictData.sets.forEach((s, i) => {
       html += `<div class="set-row">
         <div class="set-idx">${String.fromCharCode(65+i)}</div>
         <div>
           <div class="set-balls">${balls(s.numbers)}</div>
-          <div class="set-strat">${s.strategy.split('(')[0].trim()}</div>
+          <div class="set-strat" onclick="openModal(predictData.sets[${i}],${i})">${s.strategy.split('(')[0].trim()}</div>
         </div>
         <div class="set-meta">
           <span>${s.sum}</span>
@@ -404,15 +397,47 @@ function renderAnalysis() {
     <div class="card"><h3>콜드넘버 (미출현)</h3>${coldHtml}</div>
   </div>`;
 
-  // 출현 빈도 히트맵
-  const maxFreq = Math.max(...d.frequency.map(f=>f.count));
-  let heatHtml = '<div class="number-grid">';
-  for (let i=1;i<=45;i++) {
-    const f = d.frequency[i-1];
-    const int = f.count/maxFreq;
-    heatHtml += `<div class="number-cell" style="background:rgba(99,102,241,${0.08+int*0.7})" title="${i}번: ${f.count}회">${i}</div>`;
+  // 히트맵 개선: 5단계 색상 + 횟수 표시
+  const freqArr = d.frequency.map(f => f.count);
+  const minFreq = Math.min(...freqArr);
+  const maxFreq = Math.max(...freqArr);
+  const range = maxFreq - minFreq || 1;
+
+  let heatHtml = '<div class="heatmap">';
+  for (let i = 1; i <= 45; i++) {
+    const f = d.frequency[i - 1];
+    const ratio = (f.count - minFreq) / range; // 0~1 정규화
+
+    // 5단계 색상: 파랑(적음) → 초록 → 노랑 → 주황 → 빨강(많음)
+    let bg, fg;
+    if (ratio < 0.2) {
+      bg = `rgba(59,130,246,${0.3 + ratio*1.5})`; fg = '#93c5fd';
+    } else if (ratio < 0.4) {
+      bg = `rgba(34,197,94,${0.3 + (ratio-0.2)*1.5})`; fg = '#86efac';
+    } else if (ratio < 0.6) {
+      bg = `rgba(234,179,8,${0.3 + (ratio-0.4)*1.5})`; fg = '#fde047';
+    } else if (ratio < 0.8) {
+      bg = `rgba(249,115,22,${0.35 + (ratio-0.6)*1.5})`; fg = '#fdba74';
+    } else {
+      bg = `rgba(239,68,68,${0.4 + (ratio-0.8)*1.5})`; fg = '#fca5a5';
+    }
+
+    heatHtml += `<div class="hm-cell" style="background:${bg};color:${fg}" title="${i}번: ${f.count}회 (${f.rate}%)">
+      <span class="hm-num">${i}</span>
+      <span class="hm-cnt">${f.count}</span>
+    </div>`;
   }
   heatHtml += '</div>';
+  heatHtml += `<div style="display:flex;gap:4px;align-items:center;margin-top:10px;font-size:0.7rem;color:var(--dim)">
+    <span>적음</span>
+    <span style="width:18px;height:10px;border-radius:2px;background:rgba(59,130,246,0.5)"></span>
+    <span style="width:18px;height:10px;border-radius:2px;background:rgba(34,197,94,0.5)"></span>
+    <span style="width:18px;height:10px;border-radius:2px;background:rgba(234,179,8,0.5)"></span>
+    <span style="width:18px;height:10px;border-radius:2px;background:rgba(249,115,22,0.5)"></span>
+    <span style="width:18px;height:10px;border-radius:2px;background:rgba(239,68,68,0.5)"></span>
+    <span>많음</span>
+    <span style="margin-left:8px">(${minFreq}~${maxFreq}회)</span>
+  </div>`;
 
   // 동반 출현
   let pairHtml = '<div style="display:flex;flex-wrap:wrap;gap:6px">';
@@ -454,7 +479,6 @@ function renderAnalysis() {
     <div class="card"><h3>구간 분포</h3>${rangeHtml}</div>
   </div>`;
 
-  // 기타 통계
   html += `<div class="card"><h3>요약 통계</h3>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
       <div style="background:rgba(99,102,241,0.05);padding:10px 14px;border-radius:8px;display:flex;justify-content:space-between">
