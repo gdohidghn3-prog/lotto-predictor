@@ -30,238 +30,184 @@ body {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 16px;
 }
 
 header {
   text-align: center;
-  padding: 40px 0 30px;
+  padding: 32px 0 20px;
 }
 
 header h1 {
-  font-size: 2.2rem;
+  font-size: 2rem;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 8px;
-}
-
-header p {
-  color: var(--dim);
-  font-size: 0.95rem;
+  margin-bottom: 4px;
 }
 
 #status {
   color: var(--dim);
-  font-size: 0.85rem;
-  margin-top: 8px;
-}
-
-.btn-row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin: 20px 0 30px;
-  flex-wrap: wrap;
-}
-
-button {
-  padding: 10px 24px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--card);
-  color: var(--text);
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-button:hover {
-  border-color: var(--accent);
-  background: rgba(99,102,241,0.1);
-}
-
-button.primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border: none;
-  font-weight: 600;
-}
-
-button.primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  font-size: 0.82rem;
+  margin-top: 6px;
 }
 
 /* 탭 */
 .tabs {
   display: flex;
-  gap: 4px;
-  margin-bottom: 24px;
+  gap: 0;
+  margin: 20px 0 20px;
   border-bottom: 1px solid var(--border);
-  overflow-x: auto;
 }
 
 .tab {
-  padding: 10px 20px;
+  padding: 10px 24px;
   border: none;
   background: none;
   color: var(--dim);
   cursor: pointer;
   border-bottom: 2px solid transparent;
-  white-space: nowrap;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
-.tab.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-
-/* 카드 */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-}
-
-.card h3 {
-  font-size: 1rem;
-  color: var(--dim);
-  margin-bottom: 16px;
-  font-weight: 500;
-}
 
 /* 로또 볼 */
 .ball {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #fff;
-  margin: 3px;
+  margin: 2px;
   text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
+.ball.sm { width: 34px; height: 34px; font-size: 0.82rem; }
 .ball.b1  { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
 .ball.b10 { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
 .ball.b20 { background: linear-gradient(135deg, #f87171, #ef4444); }
 .ball.b30 { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
 .ball.b40 { background: linear-gradient(135deg, #34d399, #10b981); }
 
-.ball-sm {
-  width: 36px;
-  height: 36px;
-  font-size: 0.85rem;
-}
-
 /* 예측 세트 */
-.predict-set {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 12px;
+.set-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
 }
 
-.predict-set .set-label {
-  font-size: 1.4rem;
+.set-row:last-child { border-bottom: none; }
+
+.set-idx {
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--accent);
-  min-width: 28px;
+  min-width: 24px;
+  text-align: center;
 }
 
-.predict-set .balls {
-  flex: 1;
-  min-width: 280px;
-}
+.set-balls { flex: 1; }
 
-.predict-set .meta {
-  color: var(--dim);
-  font-size: 0.8rem;
+.set-meta {
   display: flex;
-  gap: 12px;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--dim);
 }
 
-.predict-set .meta span {
-  background: rgba(99,102,241,0.1);
-  padding: 4px 10px;
-  border-radius: 6px;
+.set-meta span {
+  background: rgba(99,102,241,0.08);
+  padding: 3px 8px;
+  border-radius: 5px;
 }
 
-/* 차트 바 */
-.bar-chart { margin-top: 12px; }
+.set-strat {
+  font-size: 0.78rem;
+  color: var(--dim);
+  margin-top: 4px;
+}
 
+/* 카드 */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+.card h3 {
+  font-size: 0.9rem;
+  color: var(--dim);
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+
+/* 바 차트 */
 .bar-row {
   display: flex;
   align-items: center;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
+  margin-bottom: 5px;
+  font-size: 0.82rem;
 }
 
 .bar-label {
-  min-width: 55px;
+  min-width: 50px;
   text-align: right;
-  padding-right: 10px;
+  padding-right: 8px;
   color: var(--dim);
 }
 
 .bar-track {
   flex: 1;
-  height: 22px;
-  background: rgba(99,102,241,0.08);
+  height: 20px;
+  background: rgba(99,102,241,0.06);
   border-radius: 4px;
   overflow: hidden;
-  position: relative;
 }
 
 .bar-fill {
   height: 100%;
   border-radius: 4px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  transition: width 0.6s ease;
+  transition: width 0.5s ease;
 }
 
 .bar-value {
-  min-width: 55px;
-  padding-left: 10px;
+  min-width: 80px;
+  padding-left: 8px;
   color: var(--dim);
+  font-size: 0.8rem;
 }
 
 /* 그리드 */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-@media (max-width: 768px) {
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
-  .predict-set { flex-direction: column; align-items: flex-start; }
+@media (max-width: 700px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .set-row { flex-wrap: wrap; }
+  .set-meta { width: 100%; }
 }
 
-/* 번호판 */
+/* 히트맵 */
 .number-grid {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
-  gap: 6px;
-  max-width: 420px;
+  gap: 5px;
+  max-width: 380px;
 }
 
 .number-cell {
@@ -269,174 +215,95 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  position: relative;
-}
-
-/* 최근 당첨 테이블 */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-th {
-  color: var(--dim);
-  font-weight: 500;
-  text-align: left;
-  padding: 10px 8px;
-  border-bottom: 1px solid var(--border);
-}
-
-td {
-  padding: 10px 8px;
-  border-bottom: 1px solid rgba(42,45,58,0.5);
-}
-
-/* 점수 테이블 */
-.score-table {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 6px;
-}
-
-.score-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  background: rgba(99,102,241,0.06);
   border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.82rem;
 }
 
-.score-item .num { font-weight: 600; }
-.score-item .sc { color: var(--dim); font-size: 0.8rem; }
-
-/* 로딩 */
-.loading {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--dim);
-}
-
-.loading .spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 16px;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
+/* 테이블 */
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { color: var(--dim); font-weight: 500; text-align: left; padding: 8px; border-bottom: 1px solid var(--border); }
+td { padding: 8px; border-bottom: 1px solid rgba(42,45,58,0.4); }
 
 .disclaimer {
   text-align: center;
-  padding: 20px;
+  padding: 16px;
   color: var(--dim);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   border-top: 1px solid var(--border);
-  margin-top: 40px;
+  margin-top: 32px;
 }
+
+.loading { text-align: center; padding: 50px 20px; color: var(--dim); }
+.spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.btn {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.9; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
 </style>
 </head>
 <body>
 
 <div class="container">
   <header>
-    <h1>LOTTO 6/45 Predictor</h1>
-    <p>역대 당첨번호 통계 분석 기반 번호 예측</p>
-    <div id="status">데이터 로딩 중...</div>
+    <h1>LOTTO 6/45</h1>
+    <div id="status">로딩 중...</div>
   </header>
 
-  <div class="btn-row">
-    <button class="primary" id="btnPredict" disabled>이번주 번호 예측</button>
+  <div style="text-align:center;margin-bottom:20px">
+    <button class="btn" id="btnPredict" disabled>번호 예측</button>
   </div>
 
   <div class="tabs">
     <div class="tab active" data-tab="predict">예측 결과</div>
-    <div class="tab" data-tab="freq">출현 빈도</div>
-    <div class="tab" data-tab="hot-cold">핫/콜드</div>
-    <div class="tab" data-tab="pattern">패턴 분석</div>
-    <div class="tab" data-tab="recent">최근 당첨</div>
+    <div class="tab" data-tab="analysis">분석</div>
   </div>
 
   <!-- 예측 결과 -->
   <div class="tab-content active" id="tab-predict">
     <div id="predictResult">
-      <div class="loading">
-        <div class="spinner"></div>
-        예측 버튼을 눌러 번호를 생성하세요
-      </div>
+      <div class="loading">예측 버튼을 눌러주세요</div>
     </div>
   </div>
 
-  <!-- 출현 빈도 -->
-  <div class="tab-content" id="tab-freq">
-    <div id="freqContent">
-      <div class="loading"><div class="spinner"></div>데이터 로딩 중...</div>
-    </div>
-  </div>
-
-  <!-- 핫/콜드 -->
-  <div class="tab-content" id="tab-hot-cold">
-    <div id="hotColdContent">
-      <div class="loading"><div class="spinner"></div>데이터 로딩 중...</div>
-    </div>
-  </div>
-
-  <!-- 패턴 분석 -->
-  <div class="tab-content" id="tab-pattern">
-    <div id="patternContent">
-      <div class="loading"><div class="spinner"></div>데이터 로딩 중...</div>
-    </div>
-  </div>
-
-  <!-- 최근 당첨 -->
-  <div class="tab-content" id="tab-recent">
-    <div id="recentContent">
-      <div class="loading"><div class="spinner"></div>데이터 로딩 중...</div>
+  <!-- 분석 -->
+  <div class="tab-content" id="tab-analysis">
+    <div id="analysisContent">
+      <div class="loading"><div class="spinner"></div></div>
     </div>
   </div>
 
   <div class="disclaimer">
-    본 서비스는 통계 분석 기반 참고 자료이며, 당첨을 보장하지 않습니다.<br>
-    로또는 완전한 무작위 추첨으로 어떤 예측도 확률을 높일 수 없습니다.
+    통계 분석 참고 자료이며 당첨을 보장하지 않습니다. 로또는 완전한 무작위 추첨입니다.
   </div>
 </div>
 
 <script>
-// --- 유틸 ---
-function ballClass(n) {
-  if (n <= 10) return 'b1';
-  if (n <= 20) return 'b10';
-  if (n <= 30) return 'b20';
-  if (n <= 40) return 'b30';
-  return 'b40';
-}
+function bc(n) { return n<=10?'b1':n<=20?'b10':n<=30?'b20':n<=40?'b30':'b40'; }
+function ball(n,sm) { return `<span class="ball ${sm?'sm':''} ${bc(n)}">${n}</span>`; }
+function balls(arr,sm) { return arr.map(n=>ball(n,sm)).join(''); }
 
-function makeBall(n, small) {
-  return `<span class="ball ${small ? 'ball-sm' : ''} ${ballClass(n)}">${n}</span>`;
-}
-
-function makeBalls(nums, small) {
-  return nums.map(n => makeBall(n, small)).join('');
-}
-
-// --- 탭 ---
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+// 탭
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('tab-'+t.dataset.tab).classList.add('active');
   });
 });
 
-// --- 데이터 로드 ---
 let analysisData = null;
 
 async function loadData() {
@@ -444,341 +311,167 @@ async function loadData() {
     const res = await fetch('/api/data');
     analysisData = await res.json();
     document.getElementById('status').textContent =
-      `${analysisData.latestRound}회차까지 ${analysisData.totalRounds}개 데이터 수집 완료 (${analysisData.latestDate})`;
+      `${analysisData.latestRound}회차 (${analysisData.latestDate}) | ${analysisData.totalRounds}회 데이터`;
     document.getElementById('btnPredict').disabled = false;
-    document.getElementById('btnRefresh').disabled = false;
-    renderFrequency();
-    renderHotCold();
-    renderPattern();
-    renderRecent();
-  } catch (e) {
-    document.getElementById('status').textContent = '데이터 로딩 실패. 잠시 후 다시 시도해주세요.';
+    renderAnalysis();
+  } catch(e) {
+    document.getElementById('status').textContent = '로딩 실패';
     setTimeout(loadData, 3000);
   }
 }
 
-// --- 출현 빈도 탭 ---
-function renderFrequency() {
-  const d = analysisData;
-  const sorted = [...d.frequency].sort((a, b) => b.count - a.count);
-  const maxCount = sorted[0].count;
-
-  // 히트맵
-  let heatmapHtml = '<div class="number-grid">';
-  for (let i = 1; i <= 45; i++) {
-    const f = d.frequency[i - 1];
-    const intensity = f.count / maxCount;
-    const bg = `rgba(99,102,241,${0.1 + intensity * 0.7})`;
-    heatmapHtml += `<div class="number-cell" style="background:${bg}" title="${i}번: ${f.count}회 (${f.rate}%)">${i}</div>`;
-  }
-  heatmapHtml += '</div>';
-
-  // 바 차트 (상위 15)
-  let barHtml = '<div class="bar-chart">';
-  for (const s of sorted.slice(0, 15)) {
-    const pct = (s.count / maxCount * 100).toFixed(0);
-    barHtml += `<div class="bar-row">
-      <div class="bar-label">${makeBall(s.number, true)}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-      <div class="bar-value">${s.count}회 (${s.rate}%)</div>
-    </div>`;
-  }
-  barHtml += '</div>';
-
-  document.getElementById('freqContent').innerHTML = `
-    <div class="grid-2">
-      <div class="card">
-        <h3>번호별 출현 히트맵 (진할수록 많이 출현)</h3>
-        ${heatmapHtml}
-      </div>
-      <div class="card">
-        <h3>출현 빈도 TOP 15</h3>
-        ${barHtml}
-      </div>
-    </div>
-  `;
-}
-
-// --- 핫/콜드 탭 ---
-function renderHotCold() {
-  const d = analysisData;
-
-  let hotHtml = '';
-  for (const h of d.recentHot) {
-    hotHtml += `<div class="bar-row">
-      <div class="bar-label">${makeBall(h.number, true)}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${h.count / d.recentHot[0].count * 100}%;background:linear-gradient(90deg,var(--green),#4ade80)"></div></div>
-      <div class="bar-value">최근 20회 중 ${h.count}회</div>
-    </div>`;
-  }
-
-  let coldHtml = '';
-  for (const c of d.coldNumbers) {
-    const pct = c.gap / d.coldNumbers[0].gap * 100;
-    coldHtml += `<div class="bar-row">
-      <div class="bar-label">${makeBall(c.number, true)}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--red),#f87171)"></div></div>
-      <div class="bar-value">${c.gap}회차 미출현</div>
-    </div>`;
-  }
-
-  // 동반출현 쌍
-  let pairHtml = '<div style="display:flex;flex-wrap:wrap;gap:8px">';
-  for (const p of d.topPairs.slice(0, 12)) {
-    const [a, b] = p.pair.split('-').map(Number);
-    pairHtml += `<div style="background:rgba(99,102,241,0.08);padding:6px 12px;border-radius:8px;font-size:0.85rem">
-      ${makeBall(a, true)} ${makeBall(b, true)} <span style="color:var(--dim);margin-left:4px">${p.count}회</span>
-    </div>`;
-  }
-  pairHtml += '</div>';
-
-  document.getElementById('hotColdContent').innerHTML = `
-    <div class="grid-2">
-      <div class="card">
-        <h3>핫넘버 (최근 20회 빈출)</h3>
-        <div class="bar-chart">${hotHtml}</div>
-      </div>
-      <div class="card">
-        <h3>콜드넘버 (장기 미출현)</h3>
-        <div class="bar-chart">${coldHtml}</div>
-      </div>
-    </div>
-    <div class="card">
-      <h3>동반 출현 TOP 12 (함께 자주 나오는 조합)</h3>
-      ${pairHtml}
-    </div>
-  `;
-}
-
-// --- 패턴 분석 탭 ---
-function renderPattern() {
-  const d = analysisData;
-
-  // 홀짝 분포
-  let oddEvenHtml = '<div class="bar-chart">';
-  for (const oe of d.oddEven) {
-    if (oe.count === 0) continue;
-    oddEvenHtml += `<div class="bar-row">
-      <div class="bar-label" style="min-width:70px">홀${oe.odd}:짝${oe.even}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${oe.rate}%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div>
-      <div class="bar-value">${oe.count}회 (${oe.rate}%)</div>
-    </div>`;
-  }
-  oddEvenHtml += '</div>';
-
-  // 구간 분포
-  let rangeHtml = '<div class="bar-chart">';
-  const maxRange = Math.max(...d.ranges.map(r => r.count));
-  for (const r of d.ranges) {
-    rangeHtml += `<div class="bar-row">
-      <div class="bar-label">${r.label}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${r.count / maxRange * 100}%"></div></div>
-      <div class="bar-value">${r.rate}%</div>
-    </div>`;
-  }
-  rangeHtml += '</div>';
-
-  // 끝수 분석
-  let digitHtml = '<div class="bar-chart">';
-  const maxDigit = Math.max(...d.lastDigit.map(l => l.count));
-  for (const l of d.lastDigit) {
-    digitHtml += `<div class="bar-row">
-      <div class="bar-label">끝수 ${l.digit}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${l.count / maxDigit * 100}%"></div></div>
-      <div class="bar-value">${l.count}회</div>
-    </div>`;
-  }
-  digitHtml += '</div>';
-
-  document.getElementById('patternContent').innerHTML = `
-    <div class="grid-2">
-      <div class="card">
-        <h3>홀짝 비율 분포</h3>
-        ${oddEvenHtml}
-      </div>
-      <div class="card">
-        <h3>번호 구간 분포</h3>
-        ${rangeHtml}
-      </div>
-    </div>
-    <div class="grid-2">
-      <div class="card">
-        <h3>끝수 분석</h3>
-        ${digitHtml}
-      </div>
-      <div class="card">
-        <h3>기타 통계</h3>
-        <div style="display:grid;gap:12px;padding:8px 0">
-          <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(99,102,241,0.06);border-radius:8px">
-            <span>번호 합계 평균</span>
-            <strong>${d.sumStats.avg}</strong>
-          </div>
-          <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(99,102,241,0.06);border-radius:8px">
-            <span>합계 범위</span>
-            <strong>${d.sumStats.min} ~ ${d.sumStats.max}</strong>
-          </div>
-          <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(99,102,241,0.06);border-radius:8px">
-            <span>연속번호 포함 비율</span>
-            <strong>${d.consecutiveRate}%</strong>
-          </div>
-          <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(99,102,241,0.06);border-radius:8px">
-            <span>총 분석 회차</span>
-            <strong>${d.totalRounds}회</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-// --- 최근 당첨 탭 ---
-function renderRecent() {
-  const d = analysisData;
-  let rows = '';
-  for (const r of d.recentDraws) {
-    const sum = r.numbers.reduce((a, b) => a + b, 0);
-    rows += `<tr>
-      <td><strong>${r.round}</strong></td>
-      <td>${r.date}</td>
-      <td>${makeBalls(r.numbers, true)}</td>
-      <td><span class="ball ball-sm" style="background:linear-gradient(135deg,#94a3b8,#64748b)">${r.bonus}</span></td>
-      <td>${sum}</td>
-    </tr>`;
-  }
-
-  document.getElementById('recentContent').innerHTML = `
-    <div class="card">
-      <h3>최근 10회 당첨번호</h3>
-      <div style="overflow-x:auto">
-        <table>
-          <thead><tr><th>회차</th><th>추첨일</th><th>당첨번호</th><th>보너스</th><th>합계</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-    </div>
-  `;
-}
-
-// --- 예측 ---
+// ========== 예측 ==========
 async function runPredict() {
   const btn = document.getElementById('btnPredict');
   btn.disabled = true;
   btn.textContent = '분석 중...';
-
-  document.getElementById('predictResult').innerHTML = '<div class="loading"><div class="spinner"></div>7가지 통계 모델로 번호 생성 중...</div>';
+  document.getElementById('predictResult').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
 
   try {
     const res = await fetch('/api/predict');
     const data = await res.json();
 
-    let setsHtml = '';
+    let html = `<div style="margin-bottom:16px">
+      <h2 style="font-size:1.2rem;margin-bottom:2px">${analysisData.latestRound + 1}회차 추천 번호</h2>
+      <p style="color:var(--dim);font-size:0.8rem">${analysisData.totalRounds}회 분석 기반 | 10가지 독립 전략</p>
+    </div>`;
+
+    html += '<div class="card" style="padding:0;overflow:hidden">';
     data.sets.forEach((s, i) => {
-      setsHtml += `<div class="predict-set" style="flex-direction:column;align-items:stretch">
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-          <div class="set-label">${String.fromCharCode(65 + i)}</div>
-          <div class="balls">${makeBalls(s.numbers)}</div>
-          <div class="meta">
-            <span>합계 ${s.sum}</span>
-            <span>홀:짝 ${s.oddEven}</span>
-          </div>
+      html += `<div class="set-row">
+        <div class="set-idx">${String.fromCharCode(65+i)}</div>
+        <div>
+          <div class="set-balls">${balls(s.numbers)}</div>
+          <div class="set-strat">${s.strategy.split('(')[0].trim()}</div>
         </div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-          <div style="font-size:0.85rem;color:var(--accent);font-weight:600;margin-bottom:4px">${s.strategy}</div>
-          <div style="font-size:0.8rem;color:var(--dim)">${s.reason}</div>
+        <div class="set-meta">
+          <span>${s.sum}</span>
+          <span>${s.oddEven}</span>
         </div>
       </div>`;
     });
+    html += '</div>';
 
-    // 발견된 패턴
-    let patternHtml = '';
-    if (data.patterns) {
-      const p = data.patterns;
-
-      // 주기 도래
-      let dueHtml = '<div style="display:flex;flex-wrap:wrap;gap:6px">';
-      for (const d of p.dueCycle) {
-        const color = d.dueRatio >= 1.2 ? 'var(--red)' : d.dueRatio >= 1.0 ? 'var(--orange)' : 'var(--yellow)';
-        dueHtml += `<div style="background:rgba(99,102,241,0.08);padding:4px 10px;border-radius:6px;font-size:0.8rem">
-          ${makeBall(d.number, true)} <span style="color:${color};font-weight:600">${(d.dueRatio * 100).toFixed(0)}%</span>
-          <span style="color:var(--dim)">주기${d.avgCycle}회/경과${d.sinceLastDraw}회</span>
-        </div>`;
-      }
-      dueHtml += '</div>';
-
-      // 연속번호 쌍
-      let consecHtml = p.topConsecPairs.map(c =>
-        `<span style="background:rgba(99,102,241,0.08);padding:4px 10px;border-radius:6px;font-size:0.8rem">${c.pair} (${c.count}회)</span>`
-      ).join(' ');
-
-      patternHtml = `
-        <div class="card" style="margin-top:20px">
-          <h3>발견된 패턴</h3>
-          <div style="display:grid;gap:16px;margin-top:12px">
-            <div>
-              <div style="font-size:0.85rem;font-weight:600;margin-bottom:8px;color:var(--accent)">주기 도래 번호 (평균 출현 주기 대비 경과율)</div>
-              ${dueHtml}
-            </div>
-            <div class="grid-3" style="gap:12px">
-              <div style="background:rgba(99,102,241,0.04);padding:12px;border-radius:8px">
-                <div style="font-size:0.8rem;color:var(--dim);margin-bottom:6px">최적 합계 범위</div>
-                ${p.bestSumRange.map(r => `<div style="font-size:0.85rem">${r.range} <span style="color:var(--accent)">${r.rate}%</span></div>`).join('')}
-              </div>
-              <div style="background:rgba(99,102,241,0.04);padding:12px;border-radius:8px">
-                <div style="font-size:0.8rem;color:var(--dim);margin-bottom:6px">최적 홀짝 비율</div>
-                ${p.bestOddEven.map(o => `<div style="font-size:0.85rem">홀${o.odd}:짝${o.even} <span style="color:var(--accent)">${o.rate}%</span></div>`).join('')}
-              </div>
-              <div style="background:rgba(99,102,241,0.04);padding:12px;border-radius:8px">
-                <div style="font-size:0.8rem;color:var(--dim);margin-bottom:6px">AC값 (번호 복잡도)</div>
-                <div style="font-size:0.85rem">평균: ${p.acStats.avg}</div>
-                ${p.acStats.best.map(a => `<div style="font-size:0.85rem">AC ${a.ac} <span style="color:var(--accent)">${a.rate}%</span></div>`).join('')}
-              </div>
-            </div>
-            <div>
-              <div style="font-size:0.85rem;font-weight:600;margin-bottom:8px;color:var(--accent)">자주 나오는 연속번호 쌍</div>
-              <div style="display:flex;flex-wrap:wrap;gap:6px">${consecHtml}</div>
-            </div>
-            <div style="font-size:0.8rem;color:var(--dim)">같은 끝수 포함 비율: ${p.sameEndDigitRate}%</div>
-          </div>
-        </div>
-      `;
-    }
-
-    // 종합 점수
-    let scoreHtml = '<div class="score-table">';
-    for (const r of data.ranked) {
-      const setCount = r.sets || 0;
-      const bar = setCount > 0 ? `<span style="color:var(--green);font-size:0.7rem">${'■'.repeat(setCount)}</span>` : '';
-      scoreHtml += `<div class="score-item">
-        ${makeBall(r.number, true)}
-        <span class="sc">${r.score}점 ${bar}</span>
-      </div>`;
-    }
-    scoreHtml += '</div>';
-
-    document.getElementById('predictResult').innerHTML = `
-      <div style="margin-bottom:20px">
-        <h2 style="font-size:1.3rem;margin-bottom:4px">추천 번호 5세트</h2>
-        <p style="color:var(--dim);font-size:0.85rem">${analysisData.totalRounds}회차 패턴 분석 기반 | 5가지 독립 분석 방법 (동일 데이터 = 동일 결과)</p>
-      </div>
-      ${setsHtml}
-      ${patternHtml}
-      <div class="card" style="margin-top:20px">
-        <h3>번호별 종합 점수 TOP 20 (<span style="color:var(--green)">■</span> = 추천 세트 포함 횟수)</h3>
-        ${scoreHtml}
-      </div>
-    `;
-  } catch (e) {
-    document.getElementById('predictResult').innerHTML = '<div class="loading">예측 실패. 다시 시도해주세요.</div>';
+    document.getElementById('predictResult').innerHTML = html;
+  } catch(e) {
+    document.getElementById('predictResult').innerHTML = '<div class="loading">예측 실패</div>';
   }
 
   btn.disabled = false;
-  btn.textContent = '이번주 번호 예측';
+  btn.textContent = '번호 예측';
 }
 
 document.getElementById('btnPredict').addEventListener('click', runPredict);
 
+// ========== 분석 탭 ==========
+function renderAnalysis() {
+  const d = analysisData;
+  let html = '';
 
-// --- 초기 로드 ---
+  // 최근 당첨번호
+  html += '<div class="card"><h3>최근 10회 당첨번호</h3><div style="overflow-x:auto"><table><thead><tr><th>회차</th><th>추첨일</th><th>당첨번호</th><th>+</th><th>합</th></tr></thead><tbody>';
+  for (const r of d.recentDraws) {
+    html += `<tr><td><b>${r.round}</b></td><td>${r.date}</td><td>${balls(r.numbers,true)}</td>
+      <td><span class="ball sm" style="background:#64748b">${r.bonus}</span></td>
+      <td>${r.numbers.reduce((a,b)=>a+b,0)}</td></tr>`;
+  }
+  html += '</tbody></table></div></div>';
+
+  // 핫/콜드
+  const maxHot = d.recentHot[0]?.count || 1;
+  const maxCold = d.coldNumbers[0]?.gap || 1;
+
+  let hotHtml = '';
+  for (const h of d.recentHot.slice(0,10)) {
+    hotHtml += `<div class="bar-row">
+      <div class="bar-label">${ball(h.number,true)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${h.count/maxHot*100}%;background:linear-gradient(90deg,var(--green),#4ade80)"></div></div>
+      <div class="bar-value">${h.count}회 / 20회</div>
+    </div>`;
+  }
+
+  let coldHtml = '';
+  for (const c of d.coldNumbers.slice(0,10)) {
+    coldHtml += `<div class="bar-row">
+      <div class="bar-label">${ball(c.number,true)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${c.gap/maxCold*100}%;background:linear-gradient(90deg,var(--red),#f87171)"></div></div>
+      <div class="bar-value">${c.gap}회 미출현</div>
+    </div>`;
+  }
+
+  html += `<div class="grid-2">
+    <div class="card"><h3>핫넘버 (최근 20회)</h3>${hotHtml}</div>
+    <div class="card"><h3>콜드넘버 (미출현)</h3>${coldHtml}</div>
+  </div>`;
+
+  // 출현 빈도 히트맵
+  const maxFreq = Math.max(...d.frequency.map(f=>f.count));
+  let heatHtml = '<div class="number-grid">';
+  for (let i=1;i<=45;i++) {
+    const f = d.frequency[i-1];
+    const int = f.count/maxFreq;
+    heatHtml += `<div class="number-cell" style="background:rgba(99,102,241,${0.08+int*0.7})" title="${i}번: ${f.count}회">${i}</div>`;
+  }
+  heatHtml += '</div>';
+
+  // 동반 출현
+  let pairHtml = '<div style="display:flex;flex-wrap:wrap;gap:6px">';
+  for (const p of d.topPairs.slice(0,10)) {
+    const [a,b] = p.pair.split('-').map(Number);
+    pairHtml += `<div style="background:rgba(99,102,241,0.07);padding:4px 10px;border-radius:6px;font-size:0.82rem">
+      ${ball(a,true)}${ball(b,true)} <span style="color:var(--dim)">${p.count}</span></div>`;
+  }
+  pairHtml += '</div>';
+
+  html += `<div class="grid-2">
+    <div class="card"><h3>출현 빈도 히트맵</h3>${heatHtml}</div>
+    <div class="card"><h3>동반 출현 TOP 10</h3>${pairHtml}</div>
+  </div>`;
+
+  // 홀짝 + 구간
+  let oddHtml = '';
+  for (const oe of d.oddEven) {
+    if(!oe.count) continue;
+    oddHtml += `<div class="bar-row">
+      <div class="bar-label" style="min-width:60px">홀${oe.odd}짝${oe.even}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${oe.rate}%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div>
+      <div class="bar-value">${oe.rate}%</div>
+    </div>`;
+  }
+
+  const maxR = Math.max(...d.ranges.map(r=>r.count));
+  let rangeHtml = '';
+  for (const r of d.ranges) {
+    rangeHtml += `<div class="bar-row">
+      <div class="bar-label">${r.label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${r.count/maxR*100}%"></div></div>
+      <div class="bar-value">${r.rate}%</div>
+    </div>`;
+  }
+
+  html += `<div class="grid-2">
+    <div class="card"><h3>홀짝 비율</h3>${oddHtml}</div>
+    <div class="card"><h3>구간 분포</h3>${rangeHtml}</div>
+  </div>`;
+
+  // 기타 통계
+  html += `<div class="card"><h3>요약 통계</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
+      <div style="background:rgba(99,102,241,0.05);padding:10px 14px;border-radius:8px;display:flex;justify-content:space-between">
+        <span style="color:var(--dim)">합계 평균</span><b>${d.sumStats.avg}</b>
+      </div>
+      <div style="background:rgba(99,102,241,0.05);padding:10px 14px;border-radius:8px;display:flex;justify-content:space-between">
+        <span style="color:var(--dim)">합계 범위</span><b>${d.sumStats.min}~${d.sumStats.max}</b>
+      </div>
+      <div style="background:rgba(99,102,241,0.05);padding:10px 14px;border-radius:8px;display:flex;justify-content:space-between">
+        <span style="color:var(--dim)">연속번호 포함</span><b>${d.consecutiveRate}%</b>
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('analysisContent').innerHTML = html;
+}
+
 loadData();
 </script>
 </body>

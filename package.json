@@ -4,7 +4,9 @@
   "description": "로또 6/45 번호 예측기",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "update": "node fetch-data.js",
+    "go": "node fetch-data.js && node server.js"
   },
   "dependencies": {
     "express": "^4.18.2"

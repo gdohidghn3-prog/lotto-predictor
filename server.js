@@ -108,8 +108,11 @@ async function updateData() {
   return count;
 }
 
-// --- 분석 엔진 ---
-function analyze(data) {
+// --- 분석/예측 엔진: lib/engine.js 사용 ---
+const { analyze, predict } = require('./lib/engine');
+
+// --- (아래 인라인 analyze/predict는 더 이상 사용되지 않음) ---
+function _analyze_legacy(data) {
   if (!data.length) return null;
 
   const totalRounds = data.length;
@@ -208,8 +211,8 @@ function analyze(data) {
   };
 }
 
-// --- 패턴 분석 엔진 ---
-function discoverPatterns(data) {
+// --- (legacy) 패턴 분석 엔진 ---
+function _discoverPatterns_legacy(data) {
   const patterns = [];
   const totalRounds = data.length;
   const latestRound = data[data.length - 1].round;
@@ -337,7 +340,7 @@ function discoverPatterns(data) {
 
 // --- 예측 엔진 ---
 // 5가지 완전히 다른 분석 방법 → 중복 최소화
-function predict(data) {
+function _predict_legacy(data) {
   if (!data.length) return [];
 
   const totalRounds = data.length;
@@ -583,7 +586,7 @@ app.get('/api/data', (req, res) => {
 
 app.get('/api/predict', (req, res) => {
   if (!lottoCache.length) return res.status(503).json({ error: '데이터 없음' });
-  res.json(predict(lottoCache, 5));
+  res.json(predict(lottoCache));
 });
 
 app.get('/api/refresh', async (req, res) => {
