@@ -6,9 +6,96 @@ const fs = require('fs');
 const app = express();
 const PORT = 3000;
 const DATA_FILE = path.join(__dirname, 'lotto-data.json');
+const PREDICTIONS_FILE = path.join(__dirname, 'predictions.json');
 
 // --- 데이터 캐시 ---
 let lottoCache = [];
+let predictionsCache = {}; // { [round]: { round, createdAt, basedOnRound, sets, result? } }
+
+function loadPredictions() {
+  try {
+    if (fs.existsSync(PREDICTIONS_FILE)) {
+      predictionsCache = JSON.parse(fs.readFileSync(PREDICTIONS_FILE, 'utf-8'));
+      const count = Object.keys(predictionsCache).length;
+      console.log(`[예측이력] ${count}회차 로드`);
+    }
+  } catch (e) {
+    console.log('[예측이력] 로드 실패:', e.message);
+    predictionsCache = {};
+  }
+}
+
+function savePredictions() {
+  try {
+    fs.writeFileSync(PREDICTIONS_FILE, JSON.stringify(predictionsCache, null, 2));
+  } catch (e) {
+    console.log('[예측이력] 저장 실패:', e.message);
+  }
+}
+
+// 다음 회차(latestRound+1) 예측이 없으면 자동 저장
+function ensureUpcomingPredictionSaved() {
+  if (!lottoCache.length) return;
+  const latest = lottoCache[lottoCache.length - 1];
+  const targetRound = latest.round + 1;
+  if (predictionsCache[targetRound]) return;
+
+  try {
+    const result = predict(lottoCache);
+    predictionsCache[targetRound] = {
+      round: targetRound,
+      createdAt: new Date().toISOString(),
+      basedOnRound: latest.round,
+      sets: result.sets.map(s => ({
+        numbers: s.numbers,
+        strategy: s.strategy,
+        sum: s.sum,
+        oddEven: s.oddEven
+      }))
+    };
+    savePredictions();
+    console.log(`[예측이력] ${targetRound}회차 예측 저장 (${result.sets.length}세트)`);
+  } catch (e) {
+    console.log('[예측이력] 예측 생성 실패:', e.message);
+  }
+}
+
+// 과거 예측 중 당첨번호가 나온 회차를 찾아 채점
+function evaluatePastPredictions() {
+  const byRound = new Map(lottoCache.map(d => [d.round, d]));
+  let updated = 0;
+  for (const roundStr of Object.keys(predictionsCache)) {
+    const entry = predictionsCache[roundStr];
+    if (entry.result) continue;
+    const draw = byRound.get(entry.round);
+    if (!draw) continue;
+
+    const winSet = new Set(draw.numbers);
+    const matches = entry.sets.map((s, i) => {
+      const hitNums = s.numbers.filter(n => winSet.has(n));
+      const bonusHit = s.numbers.includes(draw.bonus);
+      return {
+        setIdx: i,
+        letter: String.fromCharCode(65 + i),
+        strategy: s.strategy,
+        hits: hitNums.length,
+        hitNumbers: hitNums,
+        bonusHit
+      };
+    });
+    entry.result = {
+      winningNumbers: draw.numbers,
+      bonus: draw.bonus,
+      date: draw.date,
+      matches
+    };
+    updated++;
+  }
+  if (updated) {
+    savePredictions();
+    console.log(`[예측이력] ${updated}회차 채점 완료`);
+  }
+}
 
 // 파일에서 로드
 function loadCache() {
@@ -591,17 +678,35 @@ app.get('/api/predict', (req, res) => {
 
 app.get('/api/refresh', async (req, res) => {
   const added = await updateData();
+  if (added > 0) {
+    evaluatePastPredictions();
+    ensureUpcomingPredictionSaved();
+  }
   res.json({ ok: true, cached: lottoCache.length, added });
+});
+
+app.get('/api/history', (req, res) => {
+  const list = Object.values(predictionsCache).sort((a, b) => b.round - a.round);
+  res.json({ predictions: list });
 });
 
 // --- 서버 시작 ---
 app.listen(PORT, () => {
   console.log(`[로또예측기] http://localhost:${PORT}`);
   loadCache();
+  loadPredictions();
   if (lottoCache.length === 0) {
     console.log('[로또예측기] 데이터 파일이 없습니다. "node fetch-data.js" 를 먼저 실행하세요.');
   } else {
-    // 백그라운드 업데이트 시도
-    updateData().catch(() => {});
+    evaluatePastPredictions();
+    ensureUpcomingPredictionSaved();
+    updateData()
+      .then(added => {
+        if (added > 0) {
+          evaluatePastPredictions();
+          ensureUpcomingPredictionSaved();
+        }
+      })
+      .catch(() => {});
   }
 });

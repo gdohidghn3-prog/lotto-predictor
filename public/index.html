@@ -188,6 +188,29 @@ td { padding: 8px; border-bottom: 1px solid rgba(42,45,58,0.4); }
 }
 .btn:hover { opacity: 0.9; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* 이력 - 적중 강조 */
+.ball.hit { box-shadow: 0 0 0 3px var(--green); position: relative; z-index: 1; }
+.ball.bonus-hit { box-shadow: 0 0 0 3px var(--yellow); position: relative; z-index: 1; }
+.hits-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 0.72rem; font-weight: 600; margin-left: 6px;
+}
+.hits-0 { background: rgba(113,113,122,0.2); color: var(--dim); }
+.hits-1, .hits-2 { background: rgba(113,113,122,0.25); color: var(--text); }
+.hits-3 { background: rgba(234,179,8,0.2); color: var(--yellow); }
+.hits-4 { background: rgba(249,115,22,0.25); color: var(--orange); }
+.hits-5, .hits-6 { background: rgba(34,197,94,0.25); color: var(--green); }
+.rank-summary {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px; margin-top: 10px;
+}
+.rank-summary > div {
+  background: rgba(99,102,241,0.05); padding: 10px;
+  border-radius: 8px; text-align: center;
+}
+.rank-summary b { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+.rank-summary span { color: var(--dim); font-size: 0.75rem; }
 </style>
 </head>
 <body>
@@ -205,6 +228,7 @@ td { padding: 8px; border-bottom: 1px solid rgba(42,45,58,0.4); }
   <div class="tabs">
     <div class="tab active" data-tab="predict">예측 결과</div>
     <div class="tab" data-tab="analysis">분석</div>
+    <div class="tab" data-tab="history">지난 예측 성적</div>
   </div>
 
   <div class="tab-content active" id="tab-predict">
@@ -215,6 +239,12 @@ td { padding: 8px; border-bottom: 1px solid rgba(42,45,58,0.4); }
 
   <div class="tab-content" id="tab-analysis">
     <div id="analysisContent">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-history">
+    <div id="historyContent">
       <div class="loading"><div class="spinner"></div></div>
     </div>
   </div>
@@ -495,6 +525,122 @@ function renderAnalysis() {
 
   document.getElementById('analysisContent').innerHTML = html;
 }
+
+// ========== 지난 예측 성적 탭 ==========
+let historyLoaded = false;
+async function loadHistory() {
+  if (historyLoaded) return;
+  try {
+    const res = await fetch('/api/history');
+    const data = await res.json();
+    renderHistory(data.predictions || []);
+    historyLoaded = true;
+  } catch (e) {
+    document.getElementById('historyContent').innerHTML =
+      '<div class="loading">이력 로딩 실패</div>';
+  }
+}
+
+function renderHistory(list) {
+  if (!list.length) {
+    document.getElementById('historyContent').innerHTML =
+      '<div class="card" style="text-align:center;color:var(--dim)">저장된 예측 이력이 없습니다.<br><span style="font-size:0.78rem">다음 회차부터 자동 기록됩니다.</span></div>';
+    return;
+  }
+
+  let html = '';
+  const pending = list.filter(p => !p.result);
+  const graded = list.filter(p => p.result);
+
+  // 대기 중 (아직 추첨 안 된 회차)
+  if (pending.length) {
+    html += '<div class="card"><h3>추첨 대기 중</h3>';
+    pending.forEach(p => {
+      html += `<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <b>${p.round}회차 예측</b>
+          <span style="color:var(--dim);font-size:0.78rem">
+            ${p.basedOnRound}회차까지 데이터 기반 · ${p.createdAt.slice(0,10)} 저장
+          </span>
+        </div>
+        <div style="color:var(--dim);font-size:0.82rem">추첨 후 자동 채점됩니다 (${p.sets.length}세트)</div>
+      </div>`;
+    });
+    html = html.replace(/border-bottom:1px solid var\(--border\)(?=[^;]*$)/, '');
+    html += '</div>';
+  }
+
+  // 채점 완료
+  graded.forEach(p => {
+    const r = p.result;
+    const winSet = new Set(r.winningNumbers);
+
+    // 요약: 등수별 세트 수
+    const rankCount = { 3: 0, 4: 0, 5: 0, 5.5: 0, 6: 0 };
+    r.matches.forEach(m => {
+      if (m.hits === 6) rankCount[6]++;
+      else if (m.hits === 5 && m.bonusHit) rankCount[5.5]++;
+      else if (m.hits === 5) rankCount[5]++;
+      else if (m.hits === 4) rankCount[4]++;
+      else if (m.hits === 3) rankCount[3]++;
+    });
+    const totalHits = r.matches.reduce((s, m) => s + m.hits, 0);
+    const bestSet = r.matches.reduce((a, b) => b.hits > a.hits ? b : a);
+
+    html += `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div>
+          <b style="font-size:1.05rem">${p.round}회차 결과</b>
+          <span style="color:var(--dim);font-size:0.78rem;margin-left:8px">${r.date || ''}</span>
+        </div>
+        <div style="color:var(--dim);font-size:0.78rem">최고 적중 ${bestSet.hits}개 · 총 적중 ${totalHits}개</div>
+      </div>
+
+      <div style="margin-bottom:10px">
+        <span style="color:var(--dim);font-size:0.8rem">당첨번호 </span>
+        ${balls(r.winningNumbers)}
+        <span class="ball sm" style="background:#64748b">+${r.bonus}</span>
+      </div>
+
+      <div class="rank-summary">
+        <div><b style="color:var(--green)">${rankCount[6]}</b><span>1등 (6)</span></div>
+        <div><b style="color:var(--green)">${rankCount[5.5]}</b><span>2등 (5+보)</span></div>
+        <div><b style="color:var(--yellow)">${rankCount[5]}</b><span>3등 (5)</span></div>
+        <div><b style="color:var(--orange)">${rankCount[4]}</b><span>4등 (4)</span></div>
+        <div><b>${rankCount[3]}</b><span>5등 (3)</span></div>
+      </div>
+
+      <div style="margin-top:14px;padding:0;overflow:hidden">`;
+
+    r.matches.forEach(m => {
+      const set = p.sets[m.setIdx];
+      const ballsHtml = set.numbers.map(n => {
+        const hit = winSet.has(n);
+        const bHit = (n === r.bonus);
+        const cls = `ball ${bc(n)}${hit ? ' hit' : (bHit ? ' bonus-hit' : '')}`;
+        return `<span class="${cls}">${n}</span>`;
+      }).join('');
+
+      html += `<div class="set-row">
+        <div class="set-idx">${m.letter}</div>
+        <div>
+          <div class="set-balls">${ballsHtml}</div>
+          <div class="set-strat" style="cursor:default" onclick="event.stopPropagation()">${m.strategy.split('(')[0].trim()}</div>
+        </div>
+        <div class="set-meta">
+          <span class="hits-badge hits-${m.hits}">${m.hits}개 적중${m.bonusHit ? '+보' : ''}</span>
+        </div>
+      </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  document.getElementById('historyContent').innerHTML = html;
+}
+
+// 탭 전환 시 이력 로드
+document.querySelector('.tab[data-tab="history"]').addEventListener('click', loadHistory);
 
 loadData();
 </script>

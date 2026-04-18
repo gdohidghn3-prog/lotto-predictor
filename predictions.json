@@ -1,0 +1,388 @@
+{
+  "1220": {
+    "round": 1220,
+    "createdAt": "2026-04-18T23:34:23.432Z",
+    "basedOnRound": 1219,
+    "sets": [
+      {
+        "numbers": [
+          10,
+          15,
+          27,
+          31,
+          38,
+          45
+        ],
+        "strategy": "최근 급상승 (최근 10회 vs 전체 평균)",
+        "sum": 166,
+        "oddEven": "4:2"
+      },
+      {
+        "numbers": [
+          4,
+          12,
+          16,
+          18,
+          34,
+          43
+        ],
+        "strategy": "주기 도래 (평균 출현 주기 도달)",
+        "sum": 127,
+        "oddEven": "1:5"
+      },
+      {
+        "numbers": [
+          14,
+          17,
+          19,
+          27,
+          33,
+          34
+        ],
+        "strategy": "후속 번호 (1,2,15,28,39,45 이후 통계)",
+        "sum": 144,
+        "oddEven": "4:2"
+      },
+      {
+        "numbers": [
+          6,
+          11,
+          21,
+          33,
+          38,
+          40
+        ],
+        "strategy": "동반 출현 체인 (강한 쌍 연결)",
+        "sum": 149,
+        "oddEven": "3:3"
+      },
+      {
+        "numbers": [
+          7,
+          13,
+          22,
+          26,
+          35,
+          37
+        ],
+        "strategy": "패턴 필터 (합계+홀짝+구간 최적화, 중복 감점)",
+        "sum": 140,
+        "oddEven": "4:2"
+      },
+      {
+        "numbers": [
+          3,
+          10,
+          15,
+          28,
+          31,
+          45
+        ],
+        "strategy": "최근 급상승 단기 (최근 5회)",
+        "sum": 132,
+        "oddEven": "4:2"
+      },
+      {
+        "numbers": [
+          1,
+          26,
+          27,
+          31,
+          34,
+          44
+        ],
+        "strategy": "조건부 확률 (합계+홀짝 유사 전이)",
+        "sum": 163,
+        "oddEven": "3:3"
+      },
+      {
+        "numbers": [
+          12,
+          13,
+          18,
+          33,
+          34,
+          43
+        ],
+        "strategy": "평균 회귀 (최근 부족 → 반등 기대)",
+        "sum": 153,
+        "oddEven": "3:3"
+      },
+      {
+        "numbers": [
+          5,
+          19,
+          23,
+          24,
+          25,
+          44
+        ],
+        "strategy": "피처 복합 (빈도+최근+미출현 가중합)",
+        "sum": 140,
+        "oddEven": "4:2"
+      },
+      {
+        "numbers": [
+          4,
+          9,
+          16,
+          36,
+          37,
+          43
+        ],
+        "strategy": "패턴 필터 V2 (미출현 가중+전체 중복 감점)",
+        "sum": 145,
+        "oddEven": "3:3"
+      }
+    ],
+    "result": {
+      "winningNumbers": [
+        2,
+        22,
+        25,
+        28,
+        34,
+        43
+      ],
+      "bonus": 16,
+      "date": "2026-04-18",
+      "matches": [
+        {
+          "setIdx": 0,
+          "letter": "A",
+          "strategy": "최근 급상승 (최근 10회 vs 전체 평균)",
+          "hits": 0,
+          "hitNumbers": [],
+          "bonusHit": false
+        },
+        {
+          "setIdx": 1,
+          "letter": "B",
+          "strategy": "주기 도래 (평균 출현 주기 도달)",
+          "hits": 2,
+          "hitNumbers": [
+            34,
+            43
+          ],
+          "bonusHit": true
+        },
+        {
+          "setIdx": 2,
+          "letter": "C",
+          "strategy": "후속 번호 (1,2,15,28,39,45 이후 통계)",
+          "hits": 1,
+          "hitNumbers": [
+            34
+          ],
+          "bonusHit": false
+        },
+        {
+          "setIdx": 3,
+          "letter": "D",
+          "strategy": "동반 출현 체인 (강한 쌍 연결)",
+          "hits": 0,
+          "hitNumbers": [],
+          "bonusHit": false
+        },
+        {
+          "setIdx": 4,
+          "letter": "E",
+          "strategy": "패턴 필터 (합계+홀짝+구간 최적화, 중복 감점)",
+          "hits": 1,
+          "hitNumbers": [
+            22
+          ],
+          "bonusHit": false
+        },
+        {
+          "setIdx": 5,
+          "letter": "F",
+          "strategy": "최근 급상승 단기 (최근 5회)",
+          "hits": 1,
+          "hitNumbers": [
+            28
+          ],
+          "bonusHit": false
+        },
+        {
+          "setIdx": 6,
+          "letter": "G",
+          "strategy": "조건부 확률 (합계+홀짝 유사 전이)",
+          "hits": 1,
+          "hitNumbers": [
+            34
+          ],
+          "bonusHit": false
+        },
+        {
+          "setIdx": 7,
+          "letter": "H",
+          "strategy": "평균 회귀 (최근 부족 → 반등 기대)",
+          "hits": 2,
+          "hitNumbers": [
+            34,
+            43
+          ],
+          "bonusHit": false
+        },
+        {
+          "setIdx": 8,
+          "letter": "I",
+          "strategy": "피처 복합 (빈도+최근+미출현 가중합)",
+          "hits": 1,
+          "hitNumbers": [
+            25
+          ],
+          "bonusHit": false
+        },
+        {
+          "setIdx": 9,
+          "letter": "J",
+          "strategy": "패턴 필터 V2 (미출현 가중+전체 중복 감점)",
+          "hits": 1,
+          "hitNumbers": [
+            43
+          ],
+          "bonusHit": true
+        }
+      ]
+    }
+  },
+  "1221": {
+    "round": 1221,
+    "createdAt": "2026-04-18T23:34:23.736Z",
+    "basedOnRound": 1220,
+    "sets": [
+      {
+        "numbers": [
+          10,
+          15,
+          25,
+          28,
+          31,
+          45
+        ],
+        "strategy": "최근 급상승 (최근 10회 vs 전체 평균)",
+        "sum": 154,
+        "oddEven": "4:2"
+      },
+      {
+        "numbers": [
+          4,
+          6,
+          12,
+          16,
+          18,
+          37
+        ],
+        "strategy": "주기 도래 (평균 출현 주기 도달)",
+        "sum": 93,
+        "oddEven": "1:5"
+      },
+      {
+        "numbers": [
+          1,
+          12,
+          15,
+          27,
+          33,
+          36
+        ],
+        "strategy": "후속 번호 (2,22,25,28,34,43 이후 통계)",
+        "sum": 124,
+        "oddEven": "4:2"
+      },
+      {
+        "numbers": [
+          6,
+          11,
+          21,
+          33,
+          38,
+          40
+        ],
+        "strategy": "동반 출현 체인 (강한 쌍 연결)",
+        "sum": 149,
+        "oddEven": "3:3"
+      },
+      {
+        "numbers": [
+          7,
+          13,
+          17,
+          26,
+          30,
+          35
+        ],
+        "strategy": "패턴 필터 (합계+홀짝+구간 최적화, 중복 감점)",
+        "sum": 128,
+        "oddEven": "4:2"
+      },
+      {
+        "numbers": [
+          2,
+          3,
+          10,
+          15,
+          28,
+          31
+        ],
+        "strategy": "최근 급상승 단기 (최근 5회)",
+        "sum": 89,
+        "oddEven": "3:3"
+      },
+      {
+        "numbers": [
+          1,
+          7,
+          18,
+          19,
+          33,
+          36
+        ],
+        "strategy": "조건부 확률 (합계+홀짝 유사 전이)",
+        "sum": 114,
+        "oddEven": "4:2"
+      },
+      {
+        "numbers": [
+          4,
+          12,
+          13,
+          16,
+          18,
+          34
+        ],
+        "strategy": "평균 회귀 (최근 부족 → 반등 기대)",
+        "sum": 97,
+        "oddEven": "1:5"
+      },
+      {
+        "numbers": [
+          5,
+          8,
+          10,
+          23,
+          27,
+          44
+        ],
+        "strategy": "피처 복합 (빈도+최근+미출현 가중합)",
+        "sum": 117,
+        "oddEven": "3:3"
+      },
+      {
+        "numbers": [
+          4,
+          9,
+          17,
+          37,
+          40,
+          41
+        ],
+        "strategy": "패턴 필터 V2 (미출현 가중+전체 중복 감점)",
+        "sum": 148,
+        "oddEven": "4:2"
+      }
+    ]
+  }
+}
