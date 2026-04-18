@@ -552,6 +552,35 @@ function renderHistory(list) {
   const pending = list.filter(p => !p.result);
   const graded = list.filter(p => p.result);
 
+  // 전체 요약
+  if (graded.length) {
+    const allMatches = graded.flatMap(g => g.result.matches);
+    const totalSets = allMatches.length;
+    const dist = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+    allMatches.forEach(m => dist[m.hits]++);
+    const avg = (allMatches.reduce((s, m) => s + m.hits, 0) / totalSets).toFixed(2);
+    const hit3plus = dist[3] + dist[4] + dist[5] + dist[6];
+    const rate3 = (hit3plus / totalSets * 100).toFixed(1);
+    const simCount = graded.filter(g => g.simulated).length;
+    const realCount = graded.length - simCount;
+
+    html += `<div class="card">
+      <h3>전체 요약 (${graded.length}회차 · 세트 ${totalSets}개)</h3>
+      <div class="rank-summary">
+        <div><b style="color:var(--green)">${dist[6]}</b><span>6개 적중</span></div>
+        <div><b style="color:var(--green)">${dist[5]}</b><span>5개 적중</span></div>
+        <div><b style="color:var(--orange)">${dist[4]}</b><span>4개 적중</span></div>
+        <div><b style="color:var(--yellow)">${dist[3]}</b><span>3개 적중</span></div>
+        <div><b>${avg}</b><span>세트당 평균</span></div>
+        <div><b>${rate3}%</b><span>3개+ 적중률</span></div>
+      </div>
+      <div style="margin-top:10px;color:var(--dim);font-size:0.78rem">
+        실제 예측 ${realCount}회차 · 시뮬레이션 ${simCount}회차
+        ${simCount > 0 ? '<br>※ 시뮬레이션은 "현재 엔진으로 과거를 예측했다면"의 가정치로, 실제 예측 성과가 아닙니다.' : ''}
+      </div>
+    </div>`;
+  }
+
   // 대기 중 (아직 추첨 안 된 회차)
   if (pending.length) {
     html += '<div class="card"><h3>추첨 대기 중</h3>';
@@ -587,10 +616,15 @@ function renderHistory(list) {
     const totalHits = r.matches.reduce((s, m) => s + m.hits, 0);
     const bestSet = r.matches.reduce((a, b) => b.hits > a.hits ? b : a);
 
+    const simBadge = p.simulated
+      ? '<span style="font-size:0.68rem;padding:2px 7px;border-radius:10px;background:rgba(234,179,8,0.18);color:var(--yellow);margin-left:8px;font-weight:500">시뮬레이션</span>'
+      : '<span style="font-size:0.68rem;padding:2px 7px;border-radius:10px;background:rgba(34,197,94,0.18);color:var(--green);margin-left:8px;font-weight:500">실제 예측</span>';
+
     html += `<div class="card">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:8px">
         <div>
           <b style="font-size:1.05rem">${p.round}회차 결과</b>
+          ${simBadge}
           <span style="color:var(--dim);font-size:0.78rem;margin-left:8px">${r.date || ''}</span>
         </div>
         <div style="color:var(--dim);font-size:0.78rem">최고 적중 ${bestSet.hits}개 · 총 적중 ${totalHits}개</div>
