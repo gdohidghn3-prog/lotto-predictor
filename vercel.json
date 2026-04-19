@@ -3,7 +3,7 @@
   "outputDirectory": "public",
   "functions": {
     "api/*.js": {
-      "includeFiles": "{lotto-data.json,lib/**}"
+      "includeFiles": "{lotto-data.json,predictions.json,lib/**}"
     }
   }
 }
