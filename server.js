@@ -7,13 +7,10 @@ const app = express();
 const PORT = 3000;
 const DATA_FILE = path.join(__dirname, 'lotto-data.json');
 const PREDICTIONS_FILE = path.join(__dirname, 'predictions.json');
-const PURCHASES_FILE = path.join(__dirname, 'purchases.json');
-const IS_SERVERLESS = !!process.env.VERCEL || !!process.env.VERCEL_ENV;
 
 // --- 데이터 캐시 ---
 let lottoCache = [];
 let predictionsCache = {}; // { [round]: { round, createdAt, basedOnRound, sets, result? } }
-let purchasesCache = {}; // { [round]: { round, tickets: [...] } }
 
 function loadPredictions() {
   try {
@@ -33,84 +30,6 @@ function savePredictions() {
     fs.writeFileSync(PREDICTIONS_FILE, JSON.stringify(predictionsCache, null, 2));
   } catch (e) {
     console.log('[예측이력] 저장 실패:', e.message);
-  }
-}
-
-function loadPurchases() {
-  try {
-    if (fs.existsSync(PURCHASES_FILE)) {
-      purchasesCache = JSON.parse(fs.readFileSync(PURCHASES_FILE, 'utf-8'));
-      const tCount = Object.values(purchasesCache).reduce((s, r) => s + (r.tickets?.length || 0), 0);
-      console.log(`[구매이력] ${Object.keys(purchasesCache).length}회차 / ${tCount}티켓 로드`);
-    }
-  } catch (e) {
-    console.log('[구매이력] 로드 실패:', e.message);
-    purchasesCache = {};
-  }
-}
-
-function savePurchases() {
-  try {
-    fs.writeFileSync(PURCHASES_FILE, JSON.stringify(purchasesCache, null, 2));
-    return true;
-  } catch (e) {
-    console.log('[구매이력] 저장 실패:', e.message);
-    return false;
-  }
-}
-
-function rankOf(hits, bonusHit) {
-  if (hits === 6) return 1;
-  if (hits === 5 && bonusHit) return 2;
-  if (hits === 5) return 3;
-  if (hits === 4) return 4;
-  if (hits === 3) return 5;
-  return 0;
-}
-
-function evaluatePurchases() {
-  if (!lottoCache.length) return;
-  const byRound = new Map(lottoCache.map(d => [d.round, d]));
-  let updated = 0;
-
-  for (const roundStr of Object.keys(purchasesCache)) {
-    const entry = purchasesCache[roundStr];
-    const draw = byRound.get(entry.round);
-    if (!draw) continue;
-    const winSet = new Set(draw.numbers);
-
-    for (const tkt of (entry.tickets || [])) {
-      if (tkt.result) continue;
-      const matches = tkt.sets.map((s, i) => {
-        const hitNums = s.numbers.filter(n => winSet.has(n));
-        const bonusHit = s.numbers.includes(draw.bonus);
-        return {
-          setIdx: i,
-          letter: s.letter || String.fromCharCode(65 + i),
-          hits: hitNums.length,
-          hitNumbers: hitNums,
-          bonusHit,
-          rank: rankOf(hitNums.length, bonusHit)
-        };
-      });
-      const summary = { rank1:0, rank2:0, rank3:0, rank4:0, rank5:0, best: 0 };
-      for (const m of matches) {
-        if (m.rank >= 1 && m.rank <= 5) summary['rank' + m.rank]++;
-        if (m.hits > summary.best) summary.best = m.hits;
-      }
-      tkt.result = {
-        winningNumbers: draw.numbers,
-        bonus: draw.bonus,
-        date: draw.date,
-        matches,
-        summary
-      };
-      updated++;
-    }
-  }
-  if (updated) {
-    savePurchases();
-    console.log(`[구매이력] ${updated}티켓 채점 완료`);
   }
 }
 
@@ -747,7 +666,6 @@ function _predict_legacy(data) {
 }
 
 // --- API ---
-app.use(express.json({ limit: '64kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/status', (req, res) => {
@@ -768,7 +686,6 @@ app.get('/api/refresh', async (req, res) => {
   const added = await updateData();
   if (added > 0) {
     evaluatePastPredictions();
-    evaluatePurchases();
     ensureUpcomingPredictionSaved();
   }
   res.json({ ok: true, cached: lottoCache.length, added });
@@ -779,93 +696,20 @@ app.get('/api/history', (req, res) => {
   res.json({ predictions: list });
 });
 
-app.get('/api/purchases', (req, res) => {
-  const purchases = Object.values(purchasesCache).sort((a,b) => b.round - a.round);
-  const summary = { totalTickets:0, totalSets:0, byRank:{rank1:0,rank2:0,rank3:0,rank4:0,rank5:0} };
-  for (const r of purchases) {
-    for (const t of (r.tickets||[])) {
-      summary.totalTickets++;
-      summary.totalSets += t.sets.length;
-      if (t.result?.summary) {
-        for (const k of ['rank1','rank2','rank3','rank4','rank5']) {
-          summary.byRank[k] += t.result.summary[k] || 0;
-        }
-      }
-    }
-  }
-  res.json({ purchases, summary, serverless: IS_SERVERLESS });
-});
-
-app.post('/api/purchases', (req, res) => {
-  const { round, sets, memo } = req.body || {};
-  if (!Number.isInteger(round) || round < 1) {
-    return res.status(400).json({ ok:false, error:'invalid round' });
-  }
-  if (!Array.isArray(sets) || sets.length !== 5) {
-    return res.status(400).json({ ok:false, error:'sets must have 5 entries' });
-  }
-  for (let i = 0; i < 5; i++) {
-    const nums = sets[i]?.numbers;
-    if (!Array.isArray(nums) || nums.length !== 6) {
-      return res.status(400).json({ ok:false, error:`set ${i+1}: 6 numbers required` });
-    }
-    if (nums.some(n => !Number.isInteger(n) || n < 1 || n > 45)) {
-      return res.status(400).json({ ok:false, error:`set ${i+1}: numbers must be 1-45 integers` });
-    }
-    if (new Set(nums).size !== 6) {
-      return res.status(400).json({ ok:false, error:`set ${i+1}: duplicate numbers` });
-    }
-  }
-
-  try {
-    const now = new Date();
-    const kst = new Date(now.getTime() + 9*3600*1000).toISOString().replace('T',' ').slice(0,19);
-    const ticket = {
-      id: `tkt_${now.getTime()}_${Math.random().toString(36).slice(2,7)}`,
-      createdAt: now.toISOString(),
-      createdAtKST: kst,
-      sets: sets.map((s, i) => ({
-        letter: String.fromCharCode(65 + i),
-        numbers: [...s.numbers].sort((a,b) => a-b)
-      })),
-      memo: typeof memo === 'string' ? memo.slice(0, 200) : ''
-    };
-
-    if (!purchasesCache[round]) purchasesCache[round] = { round, tickets: [] };
-    purchasesCache[round].tickets.push(ticket);
-
-    evaluatePurchases();
-    const persisted = savePurchases();
-    if (!persisted && IS_SERVERLESS) {
-      return res.status(503).json({ ok:false, error:'read-only environment', round, ticketId: ticket.id });
-    }
-    if (!persisted) {
-      return res.status(500).json({ ok:false, error:'save failed' });
-    }
-    return res.json({ ok:true, round, ticketId: ticket.id });
-  } catch (e) {
-    console.log('[구매이력] POST 처리 실패:', e.message);
-    return res.status(500).json({ ok:false, error:'internal' });
-  }
-});
-
 // --- 서버 시작 ---
 app.listen(PORT, () => {
   console.log(`[로또예측기] http://localhost:${PORT}`);
   loadCache();
   loadPredictions();
-  loadPurchases();
   if (lottoCache.length === 0) {
     console.log('[로또예측기] 데이터 파일이 없습니다. "node fetch-data.js" 를 먼저 실행하세요.');
   } else {
     evaluatePastPredictions();
-    evaluatePurchases();
     ensureUpcomingPredictionSaved();
     updateData()
       .then(added => {
         if (added > 0) {
           evaluatePastPredictions();
-          evaluatePurchases();
           ensureUpcomingPredictionSaved();
         }
       })

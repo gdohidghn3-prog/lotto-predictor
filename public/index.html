@@ -229,7 +229,6 @@ td { padding: 8px; border-bottom: 1px solid rgba(42,45,58,0.4); }
     <div class="tab active" data-tab="predict">예측 결과</div>
     <div class="tab" data-tab="analysis">분석</div>
     <div class="tab" data-tab="history">지난 예측 성적</div>
-    <div class="tab" data-tab="purchases">내 구매 성적</div>
   </div>
 
   <div class="tab-content active" id="tab-predict">
@@ -248,10 +247,6 @@ td { padding: 8px; border-bottom: 1px solid rgba(42,45,58,0.4); }
     <div id="historyContent">
       <div class="loading"><div class="spinner"></div></div>
     </div>
-  </div>
-
-  <div class="tab-content" id="tab-purchases">
-    <div id="purchasesContent"><div class="loading"><div class="spinner"></div></div></div>
   </div>
 
   <div class="disclaimer">
@@ -680,173 +675,6 @@ function renderHistory(list) {
 
 // 탭 전환 시 이력 로드
 document.querySelector('.tab[data-tab="history"]').addEventListener('click', loadHistory);
-
-// ========== 내 구매 성적 탭 ==========
-let purchasesData = null;
-
-function escapeHtml(v) {
-  const s = String(v == null ? '' : v);
-  const d = document.createElement('span');
-  d.textContent = s;
-  return d.innerHTML;
-}
-
-async function loadPurchases() {
-  try {
-    const res = await fetch('/api/purchases');
-    purchasesData = await res.json();
-    renderPurchases();
-  } catch (e) {
-    document.getElementById('purchasesContent').innerHTML =
-      '<div class="loading">구매 이력 로딩 실패</div>';
-  }
-}
-
-function renderPurchases() {
-  const data = purchasesData || { purchases: [], summary: { totalTickets:0, totalSets:0, byRank:{} }, serverless:false };
-  const defaultRound = (typeof analysisData !== 'undefined' && analysisData?.latestRound) ? analysisData.latestRound + 1 : 1;
-
-  let formHtml = `<div class="card">
-    <h3>구매 번호 입력 (5세트)</h3>
-    ${data.serverless ? '<div style="color:var(--yellow);font-size:0.78rem;margin-bottom:8px">※ 이 환경에서는 저장이 지원되지 않습니다 (로컬에서만 영구 저장)</div>' : ''}
-    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
-      <label style="color:var(--dim);font-size:0.85rem">회차</label>
-      <input type="number" id="purchRound" value="${escapeHtml(defaultRound)}" min="1"
-             style="width:90px;padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text)">
-    </div>
-    <div id="purchSetsForm">`;
-  for (let i = 0; i < 5; i++) {
-    formHtml += `<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap">
-      <span class="set-idx" style="min-width:20px">${String.fromCharCode(65+i)}</span>`;
-    for (let j = 0; j < 6; j++) {
-      formHtml += `<input type="number" min="1" max="45" data-set="${i}" data-idx="${j}"
-        style="width:50px;padding:6px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center">`;
-    }
-    formHtml += `</div>`;
-  }
-  formHtml += `</div>
-    <div id="purchError" style="color:var(--red);font-size:0.8rem;margin-top:6px;min-height:1.2em"></div>
-    <button class="btn" id="btnSavePurchase" style="margin-top:10px">구매 내역 저장</button>
-  </div>`;
-
-  let summaryHtml = '';
-  if (data.purchases.length) {
-    const s = data.summary;
-    summaryHtml = `<div class="card">
-      <h3>전체 요약 (${escapeHtml(s.totalTickets)}티켓 · 세트 ${escapeHtml(s.totalSets)}개)</h3>
-      <div class="rank-summary">
-        <div><b style="color:var(--green)">${escapeHtml(s.byRank.rank1||0)}</b><span>1등</span></div>
-        <div><b style="color:var(--green)">${escapeHtml(s.byRank.rank2||0)}</b><span>2등 (5+보)</span></div>
-        <div><b style="color:var(--yellow)">${escapeHtml(s.byRank.rank3||0)}</b><span>3등 (5)</span></div>
-        <div><b style="color:var(--orange)">${escapeHtml(s.byRank.rank4||0)}</b><span>4등 (4)</span></div>
-        <div><b>${escapeHtml(s.byRank.rank5||0)}</b><span>5등 (3)</span></div>
-      </div>
-    </div>`;
-  }
-
-  let listHtml = '';
-  data.purchases.forEach(r => {
-    (r.tickets || []).forEach((t, ti) => {
-      const result = t.result;
-      listHtml += `<div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-          <div>
-            <b style="font-size:1.05rem">${escapeHtml(r.round)}회차</b>
-            <span style="color:var(--dim);font-size:0.78rem;margin-left:8px">티켓 #${ti+1} · ${escapeHtml((t.createdAtKST||t.createdAt||'').slice(0,16))}</span>
-          </div>
-          ${result ? `<div style="color:var(--dim);font-size:0.78rem">최고 적중 ${escapeHtml(result.summary.best)}개</div>` : '<div style="color:var(--dim);font-size:0.78rem">추첨 대기 중</div>'}
-        </div>
-        ${result ? `
-          <div style="margin-bottom:10px">
-            <span style="color:var(--dim);font-size:0.8rem">당첨번호 </span>
-            ${balls(result.winningNumbers)}
-            <span class="ball sm" style="background:#64748b">+${escapeHtml(result.bonus)}</span>
-          </div>
-          <div class="rank-summary">
-            <div><b style="color:var(--green)">${escapeHtml(result.summary.rank1)}</b><span>1등</span></div>
-            <div><b style="color:var(--green)">${escapeHtml(result.summary.rank2)}</b><span>2등</span></div>
-            <div><b style="color:var(--yellow)">${escapeHtml(result.summary.rank3)}</b><span>3등</span></div>
-            <div><b style="color:var(--orange)">${escapeHtml(result.summary.rank4)}</b><span>4등</span></div>
-            <div><b>${escapeHtml(result.summary.rank5)}</b><span>5등</span></div>
-          </div>
-          <div style="margin-top:14px">
-            ${t.sets.map((s, i) => {
-              const m = result.matches[i];
-              const winSet = new Set(result.winningNumbers);
-              const ballsHtml = s.numbers.map(n => {
-                const hit = winSet.has(n);
-                const bHit = (n === result.bonus);
-                return `<span class="ball ${bc(n)}${hit?' hit':(bHit?' bonus-hit':'')}">${n}</span>`;
-              }).join('');
-              return `<div class="set-row">
-                <div class="set-idx">${escapeHtml(s.letter)}</div>
-                <div><div class="set-balls">${ballsHtml}</div></div>
-                <div class="set-meta"><span class="hits-badge hits-${escapeHtml(m.hits)}">${escapeHtml(m.hits)}개${m.bonusHit?'+보':''}</span></div>
-              </div>`;
-            }).join('')}
-          </div>
-        ` : `
-          <div style="margin-top:6px">
-            ${t.sets.map(s => `<div class="set-row">
-              <div class="set-idx">${escapeHtml(s.letter)}</div>
-              <div class="set-balls">${balls(s.numbers)}</div>
-            </div>`).join('')}
-          </div>
-        `}
-      </div>`;
-    });
-  });
-
-  if (!data.purchases.length) {
-    listHtml = '<div class="card" style="text-align:center;color:var(--dim)">저장된 구매 내역이 없습니다.</div>';
-  }
-
-  document.getElementById('purchasesContent').innerHTML = formHtml + summaryHtml + listHtml;
-  document.getElementById('btnSavePurchase').addEventListener('click', submitPurchase);
-}
-
-async function submitPurchase() {
-  const errEl = document.getElementById('purchError');
-  errEl.textContent = '';
-  const round = parseInt(document.getElementById('purchRound').value);
-  if (!Number.isInteger(round) || round < 1) {
-    errEl.textContent = '회차를 올바르게 입력하세요'; return;
-  }
-  const sets = [];
-  for (let i = 0; i < 5; i++) {
-    const nums = [];
-    for (let j = 0; j < 6; j++) {
-      const v = parseInt(document.querySelector(`#purchSetsForm input[data-set="${i}"][data-idx="${j}"]`).value);
-      if (!Number.isInteger(v) || v < 1 || v > 45) {
-        errEl.textContent = `${String.fromCharCode(65+i)}세트 ${j+1}번째: 1~45 정수`; return;
-      }
-      nums.push(v);
-    }
-    if (new Set(nums).size !== 6) {
-      errEl.textContent = `${String.fromCharCode(65+i)}세트: 중복 번호 있음`; return;
-    }
-    sets.push({ numbers: nums });
-  }
-  if (!confirm(`${round}회차 5세트를 저장하시겠습니까?`)) return;
-
-  try {
-    const res = await fetch('/api/purchases', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ round, sets, memo: '' })
-    });
-    const json = await res.json();
-    if (!res.ok || !json.ok) {
-      errEl.textContent = json.error || '저장 실패';
-      return;
-    }
-    await loadPurchases();
-  } catch (e) {
-    errEl.textContent = '네트워크 오류';
-  }
-}
-
-document.querySelector('.tab[data-tab="purchases"]').addEventListener('click', loadPurchases);
 
 loadData();
 </script>
